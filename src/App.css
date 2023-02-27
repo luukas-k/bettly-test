@@ -1,38 +1,100 @@
-.App {
-  text-align: center;
+@font-face {
+    font-family: 'TiltNeon';
+    src: url('TiltNeon-Regular.ttf');
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1, h2, h3, p {
+    margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app {
+    font-family: 'TiltNeon';
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.app-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
 }
 
-.App-link {
-  color: #61dafb;
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: aquamarine;
+    padding: 1em;
+    border-radius: 1em;
+    transition: all 200ms;
+}
+
+button:hover {
+    transform: scale(1.2)
+}
+
+textarea {
+    width: 100%;
+    min-height: 20vh;
+    padding: 1em;
+    border-radius: 1em;
+}
+
+.icon-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: center;
+}
+
+.player-container {
+    display: flex;
+    flex-direction: column;
+}
+
+img {
+    width: 64px;
+}
+
+.small {
+    width: 24px;
+}
+
+.bet-info {
+    background-color: aliceblue;
+    padding: 1em;
+    border-radius: 1em;
+    width: 100%;
+}
+
+.red-plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 48px;
+    text-align: center;
+    width: 48px;
+    height: 48px;
+    background-color: red;
+    font-size: xx-large;
+}
+
+.bottom-right-corner {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 3em;
 }
