@@ -78,6 +78,7 @@ img {
     padding: 1em;
     border-radius: 1em;
     width: 100%;
+    cursor: pointer;
 }
 
 .red-plus {

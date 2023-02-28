@@ -92,12 +92,16 @@ function WagerDescription({ navigate, setDescription }){
 }
 
 function WagerSelection({ navigate, setWager }){
+  function select(selection){
+    setWager(selection)
+    navigate(4)
+  }
   return (
     <>
       <p>Valitse panos</p>
       <div className='icon-list'>
-        <button onClick={() => {setWager('Pizza');navigate(4)}}><img src={Pizza} /></button>
-        <button onClick={() => {setWager('Burger');navigate(4)}}><img src={Burger} /></button>
+        <button onClick={() => select('Pizza')}><img src={Pizza} /></button>
+        <button onClick={() => select('Burger')}><img src={Burger} /></button>
       </div>
     </>
   )
@@ -107,7 +111,7 @@ function WagerOverview({ navigate, bet, create }){
   return (
     <div>
       <h2>Varmista tiedot</h2>
-      <p>Tyyppi: {bet.type}<img className='small' src={Edit} /></p>
+      <p>Tyyppi: {bet.type}<img className='small' src={Edit} onClick={() => navigate(0)} /></p>
       <p>Vastustaja: {bet.against}<img className='small' src={Edit} /></p>
       <p>Kuvaus: {bet.description}<img className='small' src={Edit} /></p>
       <p>Panos: {bet.wager}<img className='small' src={Edit} /></p>
@@ -118,7 +122,7 @@ function WagerOverview({ navigate, bet, create }){
 
 function CreateBet({ setAppNavigation, createBet }){
   const [step, setStep] = useState(0)
-  const [bet, setBet] = useState({type:'1v1', against:'', description:'', wager: ''})
+  const [bet, setBet] = useState({type:'1v1', against:'', description:'', wager: '', accepted: false})
 
   function setType(type){
     setBet({
@@ -167,26 +171,29 @@ function Header(){
   )
 }
 
-function BetInfo({ state, bet }){
+function BetInfo({ state, bet, onClick }){
   return (
-    <div className='bet-info'>
+    <div className='bet-info' onClick={onClick}>
       <h2>Sinä vs {bet.against}</h2>
       <p>{bet.description}</p>
     </div>
   )
 }
 
-function BetList({ name, bets }){
+function BetList({ name, bets, selectBet }){
   if(bets.length == 0){
     return (
-      <p>No bets.</p>
+      <>
+        <h2>{name}</h2>
+        <p>No bets.</p>
+      </>
     )
   }
   return (
     <>
       <h2>{name}</h2>
       {bets.map((bet, i) => {
-        return <BetInfo state={'accepted'} bet={bet} key={i} />
+        return <BetInfo state={'accepted'} bet={bet} onClick={() => selectBet(bet)} key={i} />
       })}
     </>
   )
@@ -200,10 +207,13 @@ function RedPlus({ onClick }){
   )
 }
 
-function Home({ waitingBets, betList, setAppNavigation }){
+function Home({ betList, setAppNavigation, selectBet }){
+  const waitingBets = betList.filter(a => !a.accepted)
+  const acceptedBets = betList.filter(a => a.accepted)
   return (
     <>
-      <BetList name={'Aktiiviset vedot'} bets={betList} />
+      {waitingBets.length ? <BetList name={'Vastaanotetut haasteet'} bets={waitingBets} selectBet={selectBet} /> : <></>}
+      <BetList name={'Aktiiviset vedot'} bets={acceptedBets} selectBet={selectBet} />
       <div className='bottom-right-corner'>
         <RedPlus onClick={() => setAppNavigation('create-bet')} />
       </div>
@@ -211,21 +221,58 @@ function Home({ waitingBets, betList, setAppNavigation }){
   )
 }
 
+function ViewBet({ setAppNavigation, bet, accept, reject }){
+  function acceptSelected(){
+    accept()
+    setAppNavigation('home')
+  }
+  function rejectSelected(){
+    reject()
+    setAppNavigation('home')
+  }
+  return (
+    <>
+      <h2>Sinä vastaan {bet.against}</h2>
+      <h3>Tehtävänä on</h3>
+      <p>{bet.description}</p>
+      <h3>Panoksena on</h3>
+      <p>{bet.wager}</p>
+      <button onClick={() => setAppNavigation('home')}>Takaisin</button>
+      {!bet.accepted ? <button onClick={acceptSelected}>Hyväksy veto</button> : <></>}
+      {!bet.accepted ? <button onClick={rejectSelected}>Hylkää veto</button> : <></>}
+      {bet.accepted ? <button onClick={rejectSelected}>Merkitse valmiiksi</button> : <></>}
+    </>
+  )
+}
+
 function App() {
   const [appNav, setAppNav] = useState('home')
   const [betList, setBetList] = useState([])
+  const [selectedBet, setSelectedBet] = useState({})
 
   function createBet(bet){
     setBetList([bet, ...betList])
   }
 
-  const body = <Home />
+  function viewBet(bet){
+    setSelectedBet(bet)
+    setAppNav('view-bet')
+  }
+
+  function accept(){
+    setBetList(betList.map(b => b === selectedBet ? {...b, accepted: true} : b))
+  }
+
+  function reject(){
+    setBetList(betList.filter(b => b !== selectedBet))
+  }
+
   if(appNav === 'home'){
     return (
       <div className='app'>
         <div className='app-content'>
           <Header />
-          <Home setAppNavigation={setAppNav} betList={betList} />
+          <Home setAppNavigation={setAppNav} betList={betList} selectBet={viewBet} />
         </div>
       </div>
     )
@@ -236,6 +283,16 @@ function App() {
         <div className='app-content'>
           <Header />
           <CreateBet setAppNavigation={setAppNav} createBet={createBet} />
+        </div>
+      </div>
+    )
+  }
+  else if(appNav === 'view-bet'){
+    return (
+      <div className='app'>
+        <div className='app-content'>
+          <Header />
+          <ViewBet setAppNavigation={setAppNav} bet={selectedBet} accept={accept} reject={reject} />
         </div>
       </div>
     )
