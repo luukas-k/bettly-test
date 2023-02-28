@@ -71,6 +71,7 @@ img {
 
 .small {
     width: 24px;
+    cursor: pointer;
 }
 
 .bet-info {

@@ -102,7 +102,23 @@ function WagerSelection({ navigate, setWager }){
       <div className='icon-list'>
         <button onClick={() => select('Pizza')}><img src={Pizza} /></button>
         <button onClick={() => select('Burger')}><img src={Burger} /></button>
+        <button onClick={() => navigate(5)}>Custom</button>
       </div>
+    </>
+  )
+}
+
+function CustomWagerSelection({ navigate, setWager }){
+  const textRef = useRef()
+  function select(){
+    setWager(textRef.current.value)
+    navigate(4)
+  }
+  return (
+    <>
+      <p>Valitse panos</p>
+      <textarea ref={textRef} />
+      <button onClick={select}>Save</button>
     </>
   )
 }
@@ -111,10 +127,15 @@ function WagerOverview({ navigate, bet, create }){
   return (
     <div>
       <h2>Varmista tiedot</h2>
-      <p>Tyyppi: {bet.type}<img className='small' src={Edit} onClick={() => navigate(0)} /></p>
-      <p>Vastustaja: {bet.against}<img className='small' src={Edit} /></p>
-      <p>Kuvaus: {bet.description}<img className='small' src={Edit} /></p>
-      <p>Panos: {bet.wager}<img className='small' src={Edit} /></p>
+      <h3>Tyyppi</h3>
+      <p>{bet.type} <img className='small' src={Edit} onClick={() => navigate(0)} /></p>
+      <h3>Vastustaja</h3>
+      <p>{bet.against} <img className='small' src={Edit} onClick={() => navigate(1)} /></p>
+      <h3>Kuvaus</h3>
+      <p>{bet.description} <img className='small' src={Edit} onClick={() => navigate(2)} /></p>
+      <h3>Panos</h3>
+      <p>{bet.wager} <img className='small' src={Edit} onClick={() => navigate(3)} /></p>
+      <br />
       <button onClick={create}>Luo</button>
     </div>
   )
@@ -159,6 +180,7 @@ function CreateBet({ setAppNavigation, createBet }){
     case 2: return <WagerDescription navigate={(i) => setStep(i)} setDescription={setDescription} />
     case 3: return <WagerSelection navigate={(i) => setStep(i)} setWager={setWager} />
     case 4: return <WagerOverview navigate={(i) => setStep(i)} create={create} bet={bet} />
+    case 5: return <CustomWagerSelection navigate={(i) => setStep(i)} setWager={setWager} bet={bet} />
     default: return <p>Unknown</p>
   }
 }
@@ -185,7 +207,7 @@ function BetList({ name, bets, selectBet }){
     return (
       <>
         <h2>{name}</h2>
-        <p>No bets.</p>
+        <p>Ei aktiivisia vetoja.</p>
       </>
     )
   }
