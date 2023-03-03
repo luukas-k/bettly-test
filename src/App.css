@@ -52,6 +52,11 @@ textarea {
     border-radius: 1em;
 }
 
+input[type="text"] {
+    padding: 1em;
+    border-radius: 1em;
+}
+
 .icon-list {
     display: flex;
     flex-direction: row;

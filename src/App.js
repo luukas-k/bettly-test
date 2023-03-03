@@ -41,20 +41,26 @@ function Profile({ player }){
 
 function PlayerSelection({ navigate, setAgainst }){
   const [players, setPlayers] = useState([
+    { name: 'Muu...' },
     { name: 'Luukas' }, 
-    { name: 'Emilia'}, 
-    {name: 'Henrik'}, 
-    {name: 'Veera'}, 
-    {name:'Ilari'},
-    {name:'Aaron'},
-    {name: 'Riikka'},
-    {name: 'Henri'},
-    {name: 'Patrik'}
+    { name: 'Emilia' }, 
+    { name: 'Henrik' }, 
+    { name: 'Veera' }, 
+    { name: 'Ilari' },
+    { name: 'Aaron' },
+    { name: 'Riikka' },
+    { name: 'Henri' },
+    { name: 'Patrik' }
   ])
 
   function select(p) {
-    setAgainst(p.name)
-    navigate(2)
+    if(p.name === 'Muu...'){
+      navigate(6)
+    }
+    else{
+      setAgainst(p.name)
+      navigate(2)
+    }
   }
 
   return (
@@ -72,6 +78,22 @@ function PlayerSelection({ navigate, setAgainst }){
     </>
   )
 }
+
+function CustomPlayerSelection({ navigate, setAgainst }){
+  const textRef = useRef()
+  function select(){
+    setAgainst(textRef.current.value)
+    navigate(2)
+  }
+  return (
+    <>
+      <p>Valitse vastustajasi</p>
+      <input type="text" ref={textRef} />
+      <button onClick={select}>Save</button>
+    </>
+  )
+}
+
 
 function WagerDescription({ navigate, setDescription }){
   const textAreaRef = useRef()
@@ -98,7 +120,7 @@ function WagerSelection({ navigate, setWager }){
   }
   return (
     <>
-      <p>Valitse panos</p>
+      <h3>Valitse panos</h3>
       <div className='icon-list'>
         <button onClick={() => select('Pizza')}><img src={Pizza} /></button>
         <button onClick={() => select('Burger')}><img src={Burger} /></button>
@@ -116,12 +138,13 @@ function CustomWagerSelection({ navigate, setWager }){
   }
   return (
     <>
-      <p>Valitse panos</p>
+      <h3>Valitse panos</h3>
       <textarea ref={textRef} />
       <button onClick={select}>Save</button>
     </>
   )
 }
+
 
 function WagerOverview({ navigate, bet, create }){
   return (
@@ -181,6 +204,7 @@ function CreateBet({ setAppNavigation, createBet }){
     case 3: return <WagerSelection navigate={(i) => setStep(i)} setWager={setWager} />
     case 4: return <WagerOverview navigate={(i) => setStep(i)} create={create} bet={bet} />
     case 5: return <CustomWagerSelection navigate={(i) => setStep(i)} setWager={setWager} bet={bet} />
+    case 6: return <CustomPlayerSelection navigate={(i) => setStep(i)} setAgainst={setAgainst} bet={bet} />
     default: return <p>Unknown</p>
   }
 }
@@ -203,7 +227,7 @@ function BetInfo({ state, bet, onClick }){
 }
 
 function BetList({ name, bets, selectBet }){
-  if(bets.length == 0){
+  if(bets.length === 0){
     return (
       <>
         <h2>{name}</h2>
