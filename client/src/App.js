@@ -6,29 +6,7 @@ import Group from './Group.svg'
 import Pizza from './Pizza.svg'
 import Edit from './Edit.svg'
 import Burger from './Burger.png'
-
-function BetType({ navigate, setType }){
-  function select1v1(){
-    setType('1v1')
-    navigate(1)
-  }
-  function select1vAll(){
-    setType('1vAll')
-    navigate(2)
-  }
-  return (
-    <div className='button-container'>
-      <button onClick={select1v1}>
-        <img src={Person} />
-        <p>1 vs 1</p>
-      </button>
-      <button onClick={select1vAll}>
-        <img src={Group} />
-        <p>1 vs All</p>
-      </button>
-    </div>
-  )
-}
+import Highscore from './Highscore.svg'
 
 function Profile({ player }){
   return (
@@ -150,8 +128,6 @@ function WagerOverview({ navigate, bet, create }){
   return (
     <div>
       <h2>Varmista tiedot</h2>
-      <h3>Tyyppi</h3>
-      <p>{bet.type} <img className='small' src={Edit} onClick={() => navigate(0)} /></p>
       <h3>Vastustaja</h3>
       <p>{bet.against} <img className='small' src={Edit} onClick={() => navigate(1)} /></p>
       <h3>Kuvaus</h3>
@@ -165,7 +141,7 @@ function WagerOverview({ navigate, bet, create }){
 }
 
 function CreateBet({ setAppNavigation, createBet }){
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(1)
   const [bet, setBet] = useState({type:'1v1', against:'', description:'', wager: '', accepted: false})
 
   function setType(type){
@@ -198,7 +174,6 @@ function CreateBet({ setAppNavigation, createBet }){
   }
 
   switch(step){
-    case 0: return <BetType navigate={(i) => setStep(i)} setType={setType} />
     case 1: return <PlayerSelection navigate={(i) => setStep(i)} setAgainst={setAgainst} />
     case 2: return <WagerDescription navigate={(i) => setStep(i)} setDescription={setDescription} />
     case 3: return <WagerSelection navigate={(i) => setStep(i)} setWager={setWager} />
@@ -209,10 +184,11 @@ function CreateBet({ setAppNavigation, createBet }){
   }
 }
 
-function Header(){
+function Header({ nav }){
   return (
-    <div>
+    <div className='header'>
       <h1>Bettly</h1>
+      <img src={Highscore} className='header-scores' onClick={() => nav('view-scores')} />
     </div>
   )
 }
@@ -291,6 +267,29 @@ function ViewBet({ setAppNavigation, bet, accept, reject }){
   )
 }
 
+function ScoreBoard({ nav }){
+  const players = [
+    { name: 'Emilia', score: 400 }, 
+    { name: 'Henrik', score: 500 }, 
+    { name: 'Luukas', score: 450 }, 
+    { name: 'Veera', score: 470 }, 
+    { name: 'Ilari', score: 500 },
+    { name: 'Aaron', score: 660 },
+    { name: 'Riikka', score: 330 },
+    { name: 'Henri', score: 450 },
+    { name: 'Patrik', score: 444 }
+  ].sort(a => a.score)
+  
+  return (
+    <div className='app score-container'>
+      <table>
+        {players.map((p, i) => <tr><td>{i + 1}</td><td>{p.name}</td><td>{p.score}</td></tr>)}
+      </table>
+      <button onClick={() => nav('home')}>Takaisin</button>
+    </div>
+  )
+}
+
 function App() {
   const [appNav, setAppNav] = useState('home')
   const [betList, setBetList] = useState([])
@@ -317,7 +316,7 @@ function App() {
     return (
       <div className='app'>
         <div className='app-content'>
-          <Header />
+          <Header nav={setAppNav} />
           <Home setAppNavigation={setAppNav} betList={betList} selectBet={viewBet} />
         </div>
       </div>
@@ -327,7 +326,7 @@ function App() {
     return (
       <div className='app'>
         <div className='app-content'>
-          <Header />
+          <Header nav={setAppNav} />
           <CreateBet setAppNavigation={setAppNav} createBet={createBet} />
         </div>
       </div>
@@ -337,8 +336,18 @@ function App() {
     return (
       <div className='app'>
         <div className='app-content'>
-          <Header />
+          <Header nav={setAppNav} />
           <ViewBet setAppNavigation={setAppNav} bet={selectedBet} accept={accept} reject={reject} />
+        </div>
+      </div>
+    )
+  }
+  else if(appNav === 'view-scores'){
+    return (
+      <div className='app'>
+        <div className='app-content'>
+          <Header nav={setAppNav} />
+          <ScoreBoard nav={setAppNav} />
         </div>
       </div>
     )

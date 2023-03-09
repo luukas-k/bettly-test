@@ -7,6 +7,20 @@ h1, h2, h3, p {
     margin: 0;
 }
 
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3em;
+}
+
+.header-scores {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+
 .app {
     font-family: 'TiltNeon';
     display: flex;
@@ -104,4 +118,21 @@ img {
     right: 0;
     bottom: 0;
     padding: 3em;
+}
+
+.score-row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 5em;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.score-container {
+    width: 100%;
+}
+
+td {
+    padding: 0.3em 1em;
 }
