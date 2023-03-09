@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import './App.css'
 import Person from './Person.svg'
@@ -254,10 +254,24 @@ function RedPlus({ onClick }){
 }
 
 function Home({ betList, setAppNavigation, selectBet }){
+  const [s, setS] = useState('Loading...')
+  useEffect(() => {
+    fetch('/api/test')
+      .then(resp => {
+        console.log(resp)
+        setS('Resp...')
+        return resp.json()
+      })
+      .then(data => {
+        setS('Done...')
+      })
+  }, [])
+
   const waitingBets = betList.filter(a => !a.accepted)
   const acceptedBets = betList.filter(a => a.accepted)
   return (
     <>
+      {s}
       {waitingBets.length ? <BetList name={'Vastaanotetut haasteet'} bets={waitingBets} selectBet={selectBet} /> : <></>}
       <BetList name={'Aktiiviset vedot'} bets={acceptedBets} selectBet={selectBet} />
       <div className='bottom-right-corner'>
