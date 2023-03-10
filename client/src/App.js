@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 
 import './App.css'
 import Person from './Person.svg'
-import Group from './Group.svg'
 import Pizza from './Pizza.svg'
 import Edit from './Edit.svg'
 import Burger from './Burger.png'
 import Highscore from './Highscore.svg'
+import StarSmall from './StarSmall.svg'
+import StarMedium from './StarMedium.svg'
+import StarLarge from './StarLarge.svg'
 
 function Profile({ player }){
   return (
@@ -75,16 +77,23 @@ function CustomPlayerSelection({ navigate, setAgainst }){
 
 function WagerDescription({ navigate, setDescription }){
   const textAreaRef = useRef()
+  const [error, setError] = useState('')
 
   function updateDescription(){
     const text = textAreaRef.current.value
-    setDescription(text)
-    navigate(3)
+    if(text != ''){
+      setDescription(text)
+      navigate(3)
+    }
+    else{
+      setError('Virhe: Syötä haasteesi kuvaus.')
+    }
   }
 
   return (
     <>
       <h2>Haaste</h2>
+      {error != '' ? error : <></>}
       <textarea ref={textAreaRef} />
       <button onClick={updateDescription}>Next</button>
     </>
@@ -100,8 +109,9 @@ function WagerSelection({ navigate, setWager }){
     <>
       <h3>Valitse panos</h3>
       <div className='icon-list'>
-        <button onClick={() => select('Pizza')}><img src={Pizza} /></button>
-        <button onClick={() => select('Burger')}><img src={Burger} /></button>
+        <button onClick={() => select('10 pts')}><img src={StarSmall} />10 pistettä</button>
+        <button onClick={() => select('20 pts')}><img src={StarMedium} />20 pistettä</button>
+        <button onClick={() => select('50 pts')}><img src={StarLarge} />50 pistettä</button>
         <button onClick={() => navigate(5)}>Custom</button>
       </div>
     </>
@@ -110,14 +120,21 @@ function WagerSelection({ navigate, setWager }){
 
 function CustomWagerSelection({ navigate, setWager }){
   const textRef = useRef()
+  const [error, setError] = useState('')
   function select(){
-    setWager(textRef.current.value)
-    navigate(4)
+    if(textRef.current.value != ''){
+      setWager(textRef.current.value + ' pts')
+      navigate(4)
+    }
+    else{
+      setError('Valitse numero')
+    }
   }
   return (
     <>
       <h3>Valitse panos</h3>
-      <textarea ref={textRef} />
+      {error != '' ? error : <></>}
+      <input type="number" ref={textRef} />
       <button onClick={select}>Save</button>
     </>
   )
@@ -278,7 +295,8 @@ function ScoreBoard({ nav }){
     { name: 'Riikka', score: 330 },
     { name: 'Henri', score: 450 },
     { name: 'Patrik', score: 444 }
-  ].sort(a => a.score)
+  ]
+  players.sort((a, b) => a.score < b.score)
   
   return (
     <div className='app score-container'>

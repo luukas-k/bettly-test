@@ -71,6 +71,11 @@ input[type="text"] {
     border-radius: 1em;
 }
 
+input[type="number"] {
+    padding: 1em;
+    border-radius: 1em;
+}
+
 .icon-list {
     display: flex;
     flex-direction: row;
